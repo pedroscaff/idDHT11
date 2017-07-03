@@ -4,7 +4,7 @@
 	PURPOSE: 	Interrupt driven Lib for DHT11 with Arduino.
 	LICENCE:	GPL v3 (http://www.gnu.org/licenses/gpl.html)
 	DATASHEET: http://www.micro4you.com/files/sensor/DHT11.pdf
-	
+
 	Based on DHT11 library: http://playground.arduino.cc/Main/DHT11Lib
 */
 
@@ -39,7 +39,7 @@
 									return status;													\
 								else if(state != ACQUIRED)				\
 									return IDDHTLIB_ERROR_ACQUIRING;
-									
+
 class idDHT11
 {
 public:
@@ -56,11 +56,12 @@ public:
 	float getHumidity();
 	bool acquiring();
 	int getStatus();
-	
+	void printError();
+
 private:
-	
+
 	void (*isrCallback_wrapper)(void);
-	
+
 	enum states{RESPONSE=0,DATA=1,ACQUIRED=2,STOPPED=3,ACQUIRING=4};
 	volatile states state;
 	volatile int status;

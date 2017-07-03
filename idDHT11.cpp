@@ -4,7 +4,7 @@
 	PURPOSE: 	Interrupt driven Lib for DHT11 with Arduino.
 	LICENCE:	GPL v3 (http://www.gnu.org/licenses/gpl.html)
 	DATASHEET: http://www.micro4you.com/files/sensor/DHT11.pdf
-	
+
 	Based on DHT11 library: http://playground.arduino.cc/Main/DHT11Lib
 */
 
@@ -29,17 +29,17 @@ void idDHT11::init(int pin, int intNumber, void (*callback_wrapper) ()) {
 
 int idDHT11::acquire() {
 	if (state == STOPPED || state == ACQUIRED) {
-		
+
 		//set the state machine for interruptions analisis of the signal
 		state = RESPONSE;
-		
+
 		// EMPTY BUFFER and vars
 		for (int i=0; i< 5; i++) bits[i] = 0;
 		cnt = 7;
 		idx = 0;
 		hum = 0;
 		temp = 0;
-	
+
 		// REQUEST SAMPLE
 		pinMode(pin, OUTPUT);
 		digitalWrite(pin, LOW);
@@ -47,11 +47,11 @@ int idDHT11::acquire() {
 		digitalWrite(pin, HIGH);
 		delayMicroseconds(40);
 		pinMode(pin, INPUT);
-		
+
 		// Analize the data in an interrupt
 		us = micros();
 		attachInterrupt(intNumber,isrCallback_wrapper,FALLING);
-		
+
 		return IDDHTLIB_ACQUIRING;
 	} else
 		return IDDHTLIB_ERROR_ACQUIRING;
@@ -99,9 +99,9 @@ void idDHT11::isrCallback() {
 							detachInterrupt(intNumber);
 							// WRITE TO RIGHT VARS
 							// as bits[1] and bits[3] are allways zero they are omitted in formulas.
-							hum    = bits[0]; 
-							temp = bits[2]; 
-							uint8_t sum = bits[0] + bits[2];  
+							hum    = bits[0];
+							temp = bits[2];
+							uint8_t sum = bits[0] + bits[2];
 							if (bits[4] != sum) {
 								status = IDDHTLIB_ERROR_CHECKSUM;
 								state = STOPPED;
@@ -129,6 +129,37 @@ bool idDHT11::acquiring() {
 }
 int idDHT11::getStatus() {
 	return status;
+}
+void idDHT11::printError(const int &result) {
+	switch (result) {
+        case IDDHTLIB_OK:
+            Serial.println("OK");
+            break;
+        case IDDHTLIB_ERROR_CHECKSUM:
+            Serial.println("Error\n\r\tChecksum error");
+            break;
+        case IDDHTLIB_ERROR_ISR_TIMEOUT:
+            Serial.println("Error\n\r\tISR Time out error");
+            break;
+        case IDDHTLIB_ERROR_RESPONSE_TIMEOUT:
+            Serial.println("Error\n\r\tResponse time out error");
+            break;
+        case IDDHTLIB_ERROR_DATA_TIMEOUT:
+            Serial.println("Error\n\r\tData time out error");
+            break;
+        case IDDHTLIB_ERROR_ACQUIRING:
+            Serial.println("Error\n\r\tAcquiring");
+            break;
+        case IDDHTLIB_ERROR_DELTA:
+            Serial.println("Error\n\r\tDelta time to small");
+            break;
+        case IDDHTLIB_ERROR_NOTSTARTED:
+            Serial.println("Error\n\r\tNot started");
+            break;
+        default:
+            Serial.println("Unknown error");
+            break;
+    }
 }
 float idDHT11::getCelsius() {
 	IDDHT11_CHECK_STATE;
@@ -160,10 +191,10 @@ double idDHT11::getDewPoint() {
 	double temp_ = (a * (double) temp) / (b + (double) temp) + log( (double) hum/100);
 	double Td = (b * temp_) / (a - temp_);
 	return Td;
-	
+
 }
 // dewPoint function NOAA
-// reference: http://wahiduddin.net/calc/density_algorithms.htm 
+// reference: http://wahiduddin.net/calc/density_algorithms.htm
 double idDHT11::getDewPointSlow() {
 	IDDHT11_CHECK_STATE;
 	double A0= 373.15/(273.15 + (double) temp);
