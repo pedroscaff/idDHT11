@@ -49,10 +49,10 @@ public:
 	int acquire();
 	int acquireAndWait();
 	float getCelsius();
-	float getFahrenheit();
-	float getKelvin();
-	double getDewPoint();
-	double getDewPointSlow();
+	// float getFahrenheit();
+	// float getKelvin();
+	// double getDewPoint();
+	// double getDewPointSlow();
 	float getHumidity();
 	bool acquiring();
 	int getStatus();
