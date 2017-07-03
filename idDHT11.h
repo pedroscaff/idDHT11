@@ -56,7 +56,7 @@ public:
 	float getHumidity();
 	bool acquiring();
 	int getStatus();
-	void printError();
+	void printError(const int &result);
 
 private:
 
