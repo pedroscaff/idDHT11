@@ -56,7 +56,13 @@ public:
 	float getHumidity();
 	bool acquiring();
 	int getStatus();
+	void saveLastValidData();
+	float getLastValidCelsius();
+	float getLastValidHumidity();
 	void printError(const int &result);
+
+	float lastValidCelsius = 0;
+	float lastValidHum = 0;
 
 private:
 

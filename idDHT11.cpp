@@ -161,6 +161,17 @@ void idDHT11::printError(const int &result) {
             break;
     }
 }
+void idDHT11::saveLastValidData() {
+	lastValidCelsius = getCelsius();
+	lastValidHum = getHumidity();
+}
+float idDHT11::getLastValidCelsius() {
+	return lastValidCelsius;
+}
+float idDHT11::getLastValidHumidity() {
+	return lastValidHum;
+}
+
 float idDHT11::getCelsius() {
 	IDDHT11_CHECK_STATE;
 	return temp;
